@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - JWT_SECRET=l6o6YwWNEFacUxDN2g3YoC/f8WK8HvRQdV4JwYjH3kA=
+      - RABBITMQ_URL=amqp://rabbitmq
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_USER=victor.goioere19@gmail.com
+      - SMTP_PASS=jpyy nmxi qvuv vttr
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=auth_db
+      - DB_USER=root
+      - DB_PASSWORD=minhasenha123
+      - FRONTEND_URL=http://localhost:3000
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - auth-network
+
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=minhasenha123
+      - MYSQL_DATABASE=auth_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - auth-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - auth-network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:
+  rabbitmq_data:
+
+networks:
+  auth-network:
+    driver: bridge

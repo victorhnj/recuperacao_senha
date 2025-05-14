@@ -1,0 +1,96 @@
+{
+    "exemplos": {
+      "cadastro": {
+        "url": "http://localhost:3000/api/auth/cadastro",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "usuario@exemplo.com",
+          "senha": "senha123"
+        }
+      },
+      "login": {
+        "url": "http://localhost:3000/api/auth/login",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "usuario@exemplo.com",
+          "senha": "senha123"
+        }
+      },
+      "token": {
+        "url": "http://localhost:3000/api/auth/token",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "refreshToken": "REFRESH_TOKEN_EXEMPLO"
+        }
+      },
+      "logout": {
+        "url": "http://localhost:3000/api/auth/logout",
+        "method": "POST",
+        "headers": {},
+        "body": {}
+      },
+      "solicitar_codigo": {
+        "url": "http://localhost:3000/api/auth/senha/solicitar",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "usuario@exemplo.com"
+        }
+      },
+      "redefinir_senha": {
+        "url": "http://localhost:3000/api/auth/senha/redefinir",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "email": "usuario@exemplo.com",
+          "codigo": "ABC123",
+          "novaSenha": "nova_senha123"
+        }
+      }
+    },
+    "respostas_exemplo": {
+      "cadastro_ok": {
+        "success": true,
+        "mensagem": "Cadastro realizado com sucesso."
+      },
+      "login_ok": {
+        "success": true,
+        "mensagem": "Login efetuado com êxito."
+      },
+      "token_ok": {
+        "success": true,
+        "mensagem": "Tokens renovados com sucesso."
+      },
+      "logout_ok": {
+        "success": true,
+        "mensagem": "Logout concluído."
+      },
+      "codigo_enviado": {
+        "success": true,
+        "mensagem": "Código enviado por e-mail."
+      },
+      "senha_atualizada": {
+        "success": true,
+        "mensagem": "Senha atualizada com sucesso."
+      },
+      "erro_generico": {
+        "success": false,
+        "mensagem": "Algo deu errado.",
+        "erro": "Detalhes do erro"
+      }
+    }
+  }
+  
