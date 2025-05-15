@@ -7,6 +7,7 @@ class EventService {
       USER_UPDATED: 'auth.user.updated',
       USER_DELETED: 'auth.user.deleted',
       PASSWORD_CHANGED: 'auth.password.changed',
+      PASSWORD_RESET_REQUESTED: 'auth.password.reset.requested',
       LOGIN_SUCCESS: 'auth.login.success',
       LOGIN_FAILED: 'auth.login.failed'
     };
@@ -54,6 +55,14 @@ class EventService {
     });
   }
 
+  async publishPasswordResetRequested(email, code) {
+    await this.publish(this.queues.PASSWORD_RESET_REQUESTED, {
+      email,
+      code,
+      requestedAt: new Date()
+    });
+  }
+
   async publishLoginSuccess(user) {
     await this.publish(this.queues.LOGIN_SUCCESS, {
       id: user.id,
@@ -72,7 +81,7 @@ class EventService {
 
   async publish(queue, data) {
     try {
-      await rabbitmqConfig.send(queue, data);
+      await rabbitmqConfig.sendToQueue(queue, data);
       console.log(`[Queue] Event published to: ${queue}`);
     } catch (error) {
       console.error(`[Queue] Failed to publish event ${queue}:`, error);
