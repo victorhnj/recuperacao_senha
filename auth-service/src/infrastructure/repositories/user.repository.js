@@ -1,10 +1,10 @@
 const { Model, DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database.config');
-const Usuario = require('../../domain/entities/user.entity');
+const User = require('../../domain/entities/user.entity');
 
-class UsuarioModel extends Model {}
+class UserModel extends Model {}
 
-UsuarioModel.init({
+UserModel.init({
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -15,86 +15,92 @@ UsuarioModel.init({
     unique: true,
     allowNull: false
   },
-  senha: {
+  password: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  codigoRecuperacao: {
+  recoveryCode: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  validadeCodigo: {
+  recoveryExpires: {
     type: DataTypes.DATE,
     allowNull: true
   }
 }, {
   sequelize,
-  modelName: 'Usuario',
-  tableName: 'usuarios'
+  modelName: 'User',
+  tableName: 'users'
 });
 
-class UsuarioRepositorio {
-  async criar(dados) {
-    console.log(`[BD] Inserindo usuário: ${dados.email}`);
-    const novo = await UsuarioModel.create({
-      email: dados.email,
-      senha: dados.senha
+class UserRepository {
+  async create(data) {
+    console.log(`[DB] Creating user: ${data.email}`);
+    const created = await UserModel.create({
+      email: data.email,
+      password: data.password
     });
 
-    return new Usuario(
-      novo.id,
-      novo.email,
-      novo.senha,
-      novo.codigoRecuperacao,
-      novo.validadeCodigo
+    return new User(
+      created.id,
+      created.email,
+      created.password,
+      created.recoveryCode,
+      created.recoveryExpires
     );
   }
 
   async findByEmail(email) {
-    const usuario = await UsuarioModel.findOne({ where: { email } });
-    if (!usuario) return null;
-  
-    return new Usuario(
-      usuario.id,
-      usuario.email,
-      usuario.senha,
-      usuario.codigoRecuperacao,
-      usuario.validadeCodigo
+    const user = await UserModel.findOne({ where: { email } });
+    if (!user) return null;
+
+    return new User(
+      user.id,
+      user.email,
+      user.password,
+      user.recoveryCode,
+      user.recoveryExpires
     );
   }
 
-  async buscarPorId(id) {
-    const usuario = await UsuarioModel.findByPk(id);
-    if (!usuario) return null;
+  async findById(id) {
+    const user = await UserModel.findByPk(id);
+    if (!user) return null;
 
-    return new Usuario(
-      usuario.id,
-      usuario.email,
-      usuario.senha,
-      usuario.codigoRecuperacao,
-      usuario.validadeCodigo
+    return new User(
+      user.id,
+      user.email,
+      user.password,
+      user.recoveryCode,
+      user.recoveryExpires
     );
   }
 
-  async atualizar(id, novosDados) {
-    const usuario = await UsuarioModel.findByPk(id);
-    if (!usuario) throw new Error('Usuário não encontrado para atualização');
+  async update(id, newData) {
+    const user = await UserModel.findByPk(id);
+    if (!user) throw new Error('User not found for update');
 
-    await usuario.update({
-      email: novosDados.email,
-      senha: novosDados.senha,
-      codigoRecuperacao: novosDados.codigoRecuperacao,
-      validadeCodigo: novosDados.validadeCodigo
+    await user.update({
+      email: newData.email,
+      password: newData.password,
+      recoveryCode: newData.recoveryCode,
+      recoveryExpires: newData.recoveryExpires
     });
 
-    return new Usuario(
-      usuario.id,
-      usuario.email,
-      usuario.senha,
-      usuario.codigoRecuperacao,
-      usuario.validadeCodigo
+    return new User(
+      user.id,
+      user.email,
+      user.password,
+      user.recoveryCode,
+      user.recoveryExpires
     );
+  }
+
+  async delete(id) {
+    const user = await UserModel.findByPk(id);
+    if (!user) throw new Error('User not found for deletion');
+    await user.destroy();
   }
 }
 
-module.exports = new UsuarioRepositorio();
+module.exports = new UserRepository();
