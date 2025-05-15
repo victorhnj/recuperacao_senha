@@ -2,53 +2,53 @@ const amqp = require('amqplib');
 
 class ConexaoFila {
   constructor() {
-    this.conexao = null;
-    this.canal = null;
-    this.conectando = false;
+    this.connection = null;
+    this.channel = null; // <- Aqui deve ser "channel"
+    this.connecting = false;
   }
 
-  async iniciar() {
-    if (this.conexao || this.conectando) return;
+  async start() {
+    if (this.connection || this.connecting) return;
 
-    this.conectando = true;
+    this.connecting = true;
 
     try {
       console.log('[Fila] Conectando ao servidor RabbitMQ...');
-      this.conexao = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
-      this.canal = await this.conexao.createChannel();
+      this.connection = await amqp.connect(process.env.RABBITMQ_URL || 'amqp://localhost');
+      this.channel = await this.connection.createChannel(); // <- E aqui também
+
       console.log('[Fila] Conexão estabelecida com sucesso.');
 
-      // Eventos de erro e fechamento
-      this.conexao.on('error', (err) => {
+      this.connection.on('error', (err) => {
         console.error('[Fila] Erro na conexão:', err);
-        this.conexao = null;
-        this.canal = null;
+        this.connection = null;
+        this.channel = null;
       });
 
-      this.conexao.on('close', () => {
+      this.connection.on('close', () => {
         console.warn('[Fila] Conexão encerrada.');
-        this.conexao = null;
-        this.canal = null;
+        this.connection = null;
+        this.channel = null;
       });
 
     } catch (err) {
       console.error('[Fila] Falha ao conectar:', err);
       throw err;
     } finally {
-      this.conectando = false;
+      this.connecting = false;
     }
   }
 
-  async enviar(paraFila, conteudo) {
+  async sendToQueue(queue, content) {
     try {
-      if (!this.conexao || !this.canal) {
-        await this.iniciar();
+      if (!this.connection || !this.channel) {
+        await this.start();
       }
 
-      await this.canal.assertQueue(paraFila, { durable: true });
-      this.canal.sendToQueue(paraFila, Buffer.from(JSON.stringify(conteudo)));
+      await this.channel.assertQueue(queue, { durable: true });
+      this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(content)));
 
-      console.log(`[Fila] Mensagem enviada para "${paraFila}" com sucesso.`);
+      console.log(`[Fila] Mensagem enviada para "${queue}" com sucesso.`);
     } catch (err) {
       console.error('[Fila] Erro ao enviar mensagem:', err);
       throw err;

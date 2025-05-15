@@ -1,36 +1,36 @@
 const bcrypt = require('bcryptjs');
 
-class Usuario {
-  constructor(id, email, senha, codigoRecuperacao = null, validadeCodigo = null) {
+class User {
+  constructor(id, email, password, recoveryCode = null, recoveryExpires = null) {
     this.id = id;
     this.email = email;
-    this.senha = senha;
-    this.codigoRecuperacao = codigoRecuperacao;
-    this.validadeCodigo = validadeCodigo;
+    this.password = password;
+    this.recoveryCode = recoveryCode;
+    this.recoveryExpires = recoveryExpires;
   }
 
   async hashPassword() {
-    console.log(`[Segurança] Gerando hash da senha para: ${this.email}`);
-    this.senha = await bcrypt.hash(this.senha, 10);
+    console.log(`[Security] Hashing password for: ${this.email}`);
+    this.password = await bcrypt.hash(this.password, 10);
   }
 
-  async comparePassword(senhaDigitada) {
-    console.log(`[Segurança] Validando senha para: ${this.email}`);
-    return await bcrypt.compare(senhaDigitada, this.senha);
+  async comparePassword(typedPassword) {
+    console.log(`[Security] Validating password for: ${this.email}`);
+    return await bcrypt.compare(typedPassword, this.password);
   }
 
-  setRecoveryCode(codigo) {
-    this.codigoRecuperacao = codigo;
-    this.validadeCodigo = new Date(Date.now() + 15 * 60 * 1000); 
+  setRecoveryCode(code) {
+    this.recoveryCode = code;
+    this.recoveryExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
   }
 
-  verifyRecoveryCode(codigoInformado) {
+  verifyRecoveryCode(inputCode) {
     return (
-      this.codigoRecuperacao === codigoInformado &&
-      this.validadeCodigo &&
-      this.validadeCodigo > new Date()
+      this.recoveryCode === inputCode &&
+      this.recoveryExpires &&
+      this.recoveryExpires > new Date()
     );
   }
 }
 
-module.exports = Usuario;
+module.exports = User;

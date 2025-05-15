@@ -2,7 +2,7 @@ const rabbitmqConfig = require('../config/rabbitmq.config');
 
 class EventService {
   constructor() {
-    this.filas = {
+    this.queues = {
       USER_CREATED: 'auth.user.created',
       USER_UPDATED: 'auth.user.updated',
       USER_DELETED: 'auth.user.deleted',
@@ -12,71 +12,71 @@ class EventService {
     };
   }
 
-  async iniciar() {
+  async start() {
     try {
-      await rabbitmqConfig.iniciar();
-      console.log('[Fila] Serviço de eventos iniciado');
-    } catch (erro) {
-      console.error('[Fila] Erro ao iniciar serviço de eventos:', erro);
-      throw erro;
+      await rabbitmqConfig.start();
+      console.log('[Queue] Event service started');
+    } catch (error) {
+      console.error('[Queue] Failed to start event service:', error);
+      throw error;
     }
   }
 
-  async publicarUsuarioCriado(usuario) {
-    await this.publicar(this.filas.USER_CREATED, {
-      id: usuario.id,
-      email: usuario.email,
-      criadoEm: new Date()
+  async publishUserCreated(user) {
+    await this.publish(this.queues.USER_CREATED, {
+      id: user.id,
+      email: user.email,
+      createdAt: new Date()
     });
   }
 
-  async publicarUsuarioAtualizado(usuario) {
-    await this.publicar(this.filas.USER_UPDATED, {
-      id: usuario.id,
-      email: usuario.email,
-      atualizadoEm: new Date()
+  async publishUserUpdated(user) {
+    await this.publish(this.queues.USER_UPDATED, {
+      id: user.id,
+      email: user.email,
+      updatedAt: new Date()
     });
   }
 
-  async publicarUsuarioExcluido(usuario) {
-    await this.publicar(this.filas.USER_DELETED, {
-      id: usuario.id,
-      email: usuario.email,
-      excluidoEm: new Date()
+  async publishUserDeleted(user) {
+    await this.publish(this.queues.USER_DELETED, {
+      id: user.id,
+      email: user.email,
+      deletedAt: new Date()
     });
   }
 
-  async publicarSenhaAlterada(usuario) {
-    await this.publicar(this.filas.PASSWORD_CHANGED, {
-      id: usuario.id,
-      email: usuario.email,
-      alteradaEm: new Date()
+  async publishPasswordChanged(user) {
+    await this.publish(this.queues.PASSWORD_CHANGED, {
+      id: user.id,
+      email: user.email,
+      changedAt: new Date()
     });
   }
 
-  async publicarLoginSucesso(usuario) {
-    await this.publicar(this.filas.LOGIN_SUCCESS, {
-      id: usuario.id,
-      email: usuario.email,
-      dataHora: new Date()
+  async publishLoginSuccess(user) {
+    await this.publish(this.queues.LOGIN_SUCCESS, {
+      id: user.id,
+      email: user.email,
+      timestamp: new Date()
     });
   }
 
-  async publicarLoginFalha(email, motivo) {
-    await this.publicar(this.filas.LOGIN_FAILED, {
+  async publishLoginFailed(email, reason) {
+    await this.publish(this.queues.LOGIN_FAILED, {
       email,
-      motivo,
-      dataHora: new Date()
+      reason,
+      timestamp: new Date()
     });
   }
 
-  async publicar(fila, dados) {
+  async publish(queue, data) {
     try {
-      await rabbitmqConfig.enviar(fila, dados);
-      console.log(`[Fila] Evento publicado na fila: ${fila}`);
-    } catch (erro) {
-      console.error(`[Fila] Erro ao publicar evento ${fila}:`, erro);
-      throw erro;
+      await rabbitmqConfig.send(queue, data);
+      console.log(`[Queue] Event published to: ${queue}`);
+    } catch (error) {
+      console.error(`[Queue] Failed to publish event ${queue}:`, error);
+      throw error;
     }
   }
 }

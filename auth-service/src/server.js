@@ -35,7 +35,7 @@ const iniciarServidor = async () => {
   try {
     await syncDatabase();
     await servicoEmail.iniciar();
-    await servicoEventos.iniciar();
+    //await servicoEventos.iniciar();
 
     console.log('[Sistema] Eventos de domínio disponíveis:');
     Object.values(servicoEventos.filas || {}).forEach(ev => console.log(`- ${ev}`));
