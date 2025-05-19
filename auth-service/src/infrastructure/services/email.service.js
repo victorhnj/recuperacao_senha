@@ -17,12 +17,12 @@ class ServicoEmail {
     this.tempoEspera = 5000;
   }
 
-  // Inicia a conexão com o RabbitMQ e configura o consumidor da fila
+
   async iniciar() {
     for (let tentativa = 1; tentativa <= this.tentativasMaximas; tentativa++) {
       try {
         console.log(`[E-mail] Tentando conexão com RabbitMQ (${tentativa}/${this.tentativasMaximas})`);
-        await conexaoFila.start(); // <- método correto
+        await conexaoFila.start();
         await this.configurarFila();
         console.log('[E-mail] Serviço de e-mail ativado');
         return;
@@ -37,7 +37,7 @@ class ServicoEmail {
     throw new Error('[E-mail] Falha ao iniciar serviço após várias tentativas');
   }
 
-  // Configura a fila de escuta e o consumidor que processa as mensagens
+ 
   async configurarFila() {
     const canal = conexaoFila.channel;
 ;
@@ -54,17 +54,17 @@ class ServicoEmail {
           await this.enviarEmailRecuperacao(dados.email, dados.code);
         }
 
-        canal.ack(mensagem); // Confirma o processamento
+        canal.ack(mensagem); 
       } catch (erro) {
         console.error('[E-mail] Erro ao processar mensagem:', erro);
-        canal.nack(mensagem); // Devolve para a fila em caso de falha
+        canal.nack(mensagem); 
       }
     });
 
     console.log('[E-mail] Fila e consumidor configurados');
   }
 
-  // Envia o e-mail de recuperação de senha
+
   async enviarEmailRecuperacao(destinatario, codigo) {
     try {
       const mensagem = {

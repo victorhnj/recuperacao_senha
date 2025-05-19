@@ -3,7 +3,7 @@ const amqp = require('amqplib');
 class ConexaoFila {
   constructor() {
     this.connection = null;
-    this.channel = null; // <- Aqui deve ser "channel"
+    this.channel = null;
     this.connecting = false;
   }
 

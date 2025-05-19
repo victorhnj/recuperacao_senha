@@ -12,7 +12,7 @@ const servicoEventos = require('./infrastructure/services/event.service');
 const app = express();
 const porta = process.env.PORT || 3001;
 
-// 🔒 Segurança e parsing
+
 app.use(helmet());
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -22,20 +22,20 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// 🔧 Rota básica
+
 app.get('/', (req, res) => {
   res.json({ mensagem: 'API de autenticação ativa!' });
 });
 
-// 📌 Rotas principais
+
 app.use('/api/auth', rotasAutenticacao);
 
-// 🚀 Inicialização
+
 const iniciarServidor = async () => {
   try {
     await syncDatabase();
     await servicoEmail.iniciar();
-    //await servicoEventos.iniciar();
+
 
     console.log('[Sistema] Eventos de domínio disponíveis:');
     Object.values(servicoEventos.filas || {}).forEach(ev => console.log(`- ${ev}`));
