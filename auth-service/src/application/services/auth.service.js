@@ -122,8 +122,10 @@ class AuthService {
   }
 
   generateTokens(user) {
+    console.log(`[DEBUG] JWT_SECRET: ${process.env.JWT_SECRET}`);
     const access = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '15m' });
     const refresh = jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+    console.log(`[DEBUG]`)
     return { accessToken: access, refreshToken: refresh };
   }
 }

@@ -8,7 +8,7 @@
         },
         "body": {
           "email": "usuario@exemplo.com",
-          "senha": "senha123"
+          "password": "password123"
         }
       },
       "login": {
@@ -19,7 +19,7 @@
         },
         "body": {
           "email": "usuario@exemplo.com",
-          "senha": "senha123"
+          "password": "password123"
         }
       },
       "token": {
@@ -39,7 +39,7 @@
         "body": {}
       },
       "solicitar_codigo": {
-        "url": "http://localhost:3000/api/auth/senha/solicitar",
+        "url": "http://localhost:3000/api/auth/password/solicitar",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"
@@ -48,8 +48,8 @@
           "email": "usuario@exemplo.com"
         }
       },
-      "redefinir_senha": {
-        "url": "http://localhost:3000/api/auth/senha/redefinir",
+      "redefinir_password": {
+        "url": "http://localhost:3000/api/auth/password/redefinir",
         "method": "POST",
         "headers": {
           "Content-Type": "application/json"
@@ -57,7 +57,7 @@
         "body": {
           "email": "usuario@exemplo.com",
           "codigo": "ABC123",
-          "novaSenha": "nova_senha123"
+          "novapassword": "nova_password123"
         }
       }
     },
@@ -82,9 +82,9 @@
         "success": true,
         "mensagem": "Código enviado por e-mail."
       },
-      "senha_atualizada": {
+      "password_atualizada": {
         "success": true,
-        "mensagem": "Senha atualizada com sucesso."
+        "mensagem": "password atualizada com sucesso."
       },
       "erro_generico": {
         "success": false,

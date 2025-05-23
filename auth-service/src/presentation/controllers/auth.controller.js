@@ -4,8 +4,8 @@ const AutenticacaoMiddleware = require('../../infrastructure/middlewares/auth.mi
 class ControladorAutenticacao {
   async cadastrar(req, res) {
     try {
-      const { email, senha } = req.body;
-      const tokens = await servicoAuth.register(email, senha);
+      const { email, password } = req.body;
+      const tokens = await servicoAuth.register(email, password);
       AutenticacaoMiddleware.definirCookies(res, tokens);
       res.status(201).json({ mensagem: 'Cadastro realizado com sucesso.' });
     } catch (erro) {
@@ -15,8 +15,8 @@ class ControladorAutenticacao {
 
   async entrar(req, res) {
     try {
-      const { email, senha } = req.body;
-      const tokens = await servicoAuth.login(email, senha);
+      const { email, password } = req.body;
+      const tokens = await servicoAuth.login(email, password);
       AutenticacaoMiddleware.definirCookies(res, tokens);
       res.json({ mensagem: 'Login efetuado com êxito.' });
     } catch (erro) {
@@ -52,8 +52,8 @@ class ControladorAutenticacao {
 
   async redefinirSenha(req, res) {
     try {
-      const { email, codigo, novaSenha } = req.body;
-      const resultado = await servicoAuth.applyNewPassword(email, codigo, novaSenha);
+      const { email, codigo, novapassword } = req.body;
+      const resultado = await servicoAuth.applyNewPassword(email, codigo, novapassword);
       res.json(resultado);
     } catch (erro) {
       res.status(400).json({ erro: erro.message });

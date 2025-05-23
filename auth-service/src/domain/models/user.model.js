@@ -1,20 +1,20 @@
 const bcrypt = require('bcryptjs');
 
 class UsuarioModel {
-  constructor(id, email, senha, codigo = null, expiracao = null) {
+  constructor(id, email, password, codigo = null, expiracao = null) {
     this.id = id;
     this.email = email;
-    this.senha = senha;
+    this.password = password;
     this.codigo = codigo;
     this.expiracao = expiracao;
   }
 
-  async criptografarSenha() {
-    this.senha = await bcrypt.hash(this.senha, 10);
+  async criptografarpassword() {
+    this.password = await bcrypt.hash(this.password, 10);
   }
 
-  async senhaCorreta(senhaInformada) {
-    return await bcrypt.compare(senhaInformada, this.senha);
+  async passwordCorreta(passwordInformada) {
+    return await bcrypt.compare(passwordInformada, this.password);
   }
 
   gerarCodigoRecuperacao(codigoGerado) {
